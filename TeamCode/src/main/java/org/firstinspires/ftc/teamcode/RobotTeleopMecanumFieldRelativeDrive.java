@@ -28,6 +28,9 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -36,6 +39,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+
 
 /*
  * This OpMode illustrates how to program your robot to drive field relative.  This means
@@ -52,8 +57,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
  *
  */
 @TeleOp(name = "Robot: Field Relative Mecanum Drive", group = "Robot")
+@Config
 
 public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
+    public static double maxSpeed = 1.0;  // make this slower for outreaches
     // This declares the four motors needed
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
@@ -69,6 +76,7 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "M2");
         backLeftDrive = hardwareMap.get(DcMotor.class, "M3");
         backRightDrive = hardwareMap.get(DcMotor.class, "M4");
+        telemetry=new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
@@ -143,7 +151,7 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         double backLeftPower = forward - right + rotate;
 
         double maxPower = 1.0;
-        double maxSpeed = 1.0;  // make this slower for outreaches
+
 
         // This is needed to make sure we don't pass > 1.0 to any wheel
         // It allows us to keep all of the motors in proportion to what they should
@@ -152,6 +160,8 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         maxPower = Math.max(maxPower, Math.abs(frontRightPower));
         maxPower = Math.max(maxPower, Math.abs(backRightPower));
         maxPower = Math.max(maxPower, Math.abs(backLeftPower));
+
+        telemetry.addData("Speed",maxSpeed * (frontLeftPower / maxPower));
 
         // We multiply by maxSpeed so that it can be set lower for outreaches
         // When a young child is driving the robot, we may not want to allow full
