@@ -5,9 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "Robot: Field Relative Mecanum Drive", group = "Robot")
-
-
+@TeleOp(name = "IntakeServoTest", group = "Robot")
 public class IntakeServo extends OpMode {
 
     CRServo Intake;
@@ -18,9 +16,19 @@ public class IntakeServo extends OpMode {
 
     @Override
     public void loop() {
+        //forward intake controls
         if (gamepad2.right_bumper) {
-
+            Intake.setPower(-1);
+        }
+        else if (gamepad2.left_bumper) {
+            Intake.setPower(1);
+        }
+        else{
+            Intake.setPower(0);
         }
 
+        //telementry stuff
+        telemetry.addData("Intake Power", Intake.getPower());
+        telemetry.addData("Intake Direction???", Intake.getDirection());
     }
 }
